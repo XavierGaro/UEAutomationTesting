@@ -1,13 +1,13 @@
-﻿#Unreal Engine Automation Testing Sandbox
+# Unreal Engine Automation Testing Sandbox
 
 Projecto para Unreal Engine 5 en el que se incluyen los scripts necesarios para demostrar el funcionamiento del sistema  de tests automatizados (Automation Testing) integrado en el motor.
 
 Se incluyen ejemplos de tests que se pasan con éxito y tests que fallan indicando los motivos por los que fallan.
 
-##Uso con Unreal Engine 4
+## Uso con Unreal Engine 4
 Aunque el proyecto está configurado para Unreal Engine 5 el código es completamente compatible con UE4, aunque en ese caso será necesario activar los plugins de automatización (en UE5 estan activados por defecto)
 
-##Ejecución de los tests
+## Ejecución de los tests
 Los tests pueden ejectuarse desde la ventana *Session Frontend* (pestaña *Automation*), desde Rider (pestaña inferior, *Unit Tests*) o desde la línea de comandos. Para UE5:
 
 ```
