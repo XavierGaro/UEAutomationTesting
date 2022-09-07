@@ -167,8 +167,9 @@ bool FDummyActorTestExpectedErrorExactSuccess::RunTest(const FString& Parameters
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestExpectedErrorRegex,
-								 "TestingSandbox.DummyActorTest.ExpectedErrorRegexSuccess",
-								 EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+                                 "TestingSandbox.DummyActorTest.ExpectedErrorRegexSuccess",
+                                 EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
 bool FDummyActorTestExpectedErrorRegex::RunTest(const FString& Parameters)
 {
 	AddExpectedError(TEXT("\\d{4}"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
@@ -180,18 +181,45 @@ bool FDummyActorTestExpectedErrorRegex::RunTest(const FString& Parameters)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestExpectedErrorRegexFail,
-								 "TestingSandbox.DummyActorTest.ExpectedErrorRegexFail",
-								 EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+                                 "TestingSandbox.DummyActorTest.ExpectedErrorRegexFail",
+                                 EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
 bool FDummyActorTestExpectedErrorRegexFail::RunTest(const FString& Parameters)
 {
 	AddExpectedError(TEXT("\\d{4}"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
 	UE_LOG(LogTemp, Error, TEXT("Código secreto ABCDE"));
-	
-	AddWarning(TEXT("Este test falla porque la expresión regular indica que se buscan 4 dígitos consecutivos y el mensaje de error solo cotiene letras"));
+
+	AddWarning(TEXT(
+		"Este test falla porque la expresión regular indica que se buscan 4 dígitos consecutivos y el mensaje de error solo cotiene letras"));
 	return true;
 }
 
+// Los tests complejos deben implementar dos funciontes, GetTests y RunTest, que será el test a ejecutar para
+// Cada uno de los elementos preparados en GetTest
+IMPLEMENT_COMPLEX_AUTOMATION_TEST(FComplexTest, "TestingSandbox.DummyActorTest.Complex",
+                                  EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-// TODO: COMPLEX
+void FComplexTest::GetTests(TArray<FString>& OutBeautifiedNames, TArray<FString>& OutTestCommands) const
+{
+	for (int i = 0; i < 10; i++)
+	{
+		FString num = FString::FromInt(i);
+		OutBeautifiedNames.Add("Test " + num);
+		OutTestCommands.Add(num);
+	}
+}
 
-// TODO: LATENT
+// Los parámetros siempre llegan como un string y hay que procesarlos como sea necesario
+bool FComplexTest::RunTest(const FString& Parameters)
+{
+	UE_LOG(LogTemp, Log, TEXT("%s"), *Parameters);
+	int32 i = FCString::Atoi(*Parameters);
+
+	// Solo pararan los números pares
+	TestEqual("No es par", i % 2, 0);
+
+
+	//ADD_LATENT_AUTOMATION_COMMAND(FEnqueuePerformanceCaptureCommands());
+
+	return true;
+}
