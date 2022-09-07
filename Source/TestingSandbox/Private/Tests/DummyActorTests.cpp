@@ -174,8 +174,6 @@ bool FDummyActorTestExpectedErrorRegex::RunTest(const FString& Parameters)
 	AddExpectedError(TEXT("\\d{4}"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
 	UE_LOG(LogTemp, Error, TEXT("Código secreto 1234"));
 
-
-	// Esto no aparece
 	AddWarning(TEXT("Este test pasa porque la expresión regular indica que se buscan 4 dígitos consecutivos"));
 
 	return true;
@@ -188,10 +186,12 @@ bool FDummyActorTestExpectedErrorRegexFail::RunTest(const FString& Parameters)
 {
 	AddExpectedError(TEXT("\\d{4}"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
 	UE_LOG(LogTemp, Error, TEXT("Código secreto ABCDE"));
-
-
-	// Esto no aparece
+	
 	AddWarning(TEXT("Este test falla porque la expresión regular indica que se buscan 4 dígitos consecutivos y el mensaje de error solo cotiene letras"));
-
 	return true;
 }
+
+
+// TODO: COMPLEX
+
+// TODO: LATENT
