@@ -20,12 +20,12 @@ Those tests can be run from the Session Front-end Window (*Automation* tab), sel
 Also, Automated Tests (not functional) can be run in Rider IDE (bottom tab, *Unit Tests*), but complex tests will show an error and won't run.
 
 
-To run the *Automation Tests* from the command line:
+To run the **Automation Tests** from the command line:
 ```
 {ue4 editor path}\UE4Editor.exe" {project path}\TestingSandbox.uproject" -ExecCmds="Automation RunTests TestingSandbox" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={ruta al proyecto}\Saved\TestReport\Automation" -Log -Log=RunTests.log
 ```
 
-To run the *Functional Tests* from the command line:
+To run the **Functional Tests** from the command line:
 ```
 {ue4 editor path}\UE4Editor.exe" {project path}\TestingSandbox.uproject" -ExecCmds="Automation RunTests Functional Tests" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={ruta al proyecto}\Saved\TestReport\Functional" -Log -Log=RunTests.log
 ```
