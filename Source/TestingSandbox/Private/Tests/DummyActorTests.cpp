@@ -1,12 +1,14 @@
 ﻿#include "Misc/AutomationTest.h"
 
 /**
- * Demostración del funcionamiento del sistema de test automatizados de UE4 (Automation Testing), incluyendo tests
- * que se pasan con éxito y tests que fallan y los motivos por los que fallan.
+ * This is a demostration for Unreal Engine 5 Atutomation Testing. It includes fail and pass tests to show
+ * how it works in different cases.
  */
 
 
-// Clase vacía utilizado para demostrar la diferencia entre objetos y comprobaciones de valores nulos.
+/*
+ * Dummy classe used to show object comparison and null values
+ */
 class DummyObject
 {
 };
@@ -16,7 +18,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestSuccess, "TestingSandbox.DummyAc
 
 bool FDummyActorTestSuccess::RunTest(const FString& Parameters)
 {
-	AddInfo(TEXT("Este test siempre pasa"));
+	AddInfo(TEXT("This test will always succeed, because it returns true"));
 	return true;
 }
 
@@ -25,7 +27,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestFail, "TestingSandbox.DummyActor
 
 bool FDummyActorTestFail::RunTest(const FString& Parameters)
 {
-	AddInfo(TEXT("Este test siempre falla "));
+	AddInfo(TEXT("This test will always fail, because it returns false "));
 	return false;
 }
 
@@ -36,7 +38,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestFailBecasueAddError,
 
 bool FDummyActorTestFailBecasueAddError::RunTest(const FString& Parameters)
 {
-	AddError(TEXT("Este test siempre falla porque se ha usado AddError()"));
+	AddError(TEXT("This test will always fail becasue we have used AddError()"));
 	return true;
 }
 
@@ -49,7 +51,8 @@ bool FDummyActorTestFailBecasueAddErrorIfFalse::RunTest(const FString& Parameter
 {
 	bool isConnected = true;
 	AddErrorIfFalse(isConnected,
-	                TEXT("El mensaje solo se muestra si la expresión es falsa, por lo tanto se pasará el test"),
+	                TEXT(
+		                "This message only is shown if the expression is false, so it won't be shown and the test will pass"),
 	                isConnected);
 	return true;
 }
@@ -61,20 +64,18 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestFailBecasueAddErrorIfTrue,
 bool FDummyActorTestFailBecasueAddErrorIfTrue::RunTest(const FString& Parameters)
 {
 	bool isConnected = false;
-	AddErrorIfFalse(isConnected, TEXT("En este caso la expresión es falsa, por lo tanto el test fallará"), isConnected);
+	AddErrorIfFalse(isConnected, TEXT("In theis case the expression is false, so the test will fail"), isConnected);
 	return true;
 }
 
 
 /**
- * Bateria de pruebas para demostrar el uso de los métodos equivalentes a assert() en otros frameworks.
+ * Test battery to show how work some of the assert() variants.
  *
- * ALERTA! Un test solo debe fallar por una única razón, y cada test solo debe testear un concepto por test.
- * En este caso de manera excepcional se ha creado una batería de pruebas para simplificar la demostración de su
- * funcionamiento.
+ * WARNING! A test must only fail because a reason, and each test only must test a single concept.
  *
- * Si se modifica el ejemplo para hacer que alguno de los ejemplos falle se mostrará el mensaje que acompaña
- * a la comparación que ha fallado.
+ * This tests exists only as a demonstration to show how asserts work for Automation Tests.
+ *
  */
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestBatch, "TestingSandbox.DummyActorTest.Batch",
                                  EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
@@ -83,33 +84,32 @@ bool FDummyActorTestBatch::RunTest(const FString& Parameters)
 {
 	int a = 42;
 	int b = 42;
-	TestEqual(TEXT("Comprobamos que a y b són iguales"), a, b);
+	TestEqual(TEXT("a & b must be equal"), a, b);
 
 	FString text1 = "foobar";
 	FString text2 = "foobar";
-	TestEqual(TEXT("Comprobamos que los textos són iguales"), text1, text2);
-	TestNotSame("Comprobamos que los textos no són la misma cadena de texto", text1, text2);
+	TestEqual(TEXT("text1 & text2 must be equal"), text1, text2);
+	TestNotSame("text1 and tex2 are equal, but they arent the same string", text1, text2);
 
 	FString text3 = "FooBar";
-	TestEqualInsensitive(TEXT("Comprobamos que los textos són iguales (ignora majúsculas)"), *text1, *text3);
+	TestEqualInsensitive(TEXT("text1 and text3 must be equal when ignorin casing"), *text1, *text3);
 
 	bool isConnected = false;
-	TestFalse("Comprobamos que el valor es falso", isConnected);
-	TestTrue("Comprobamos que el valor es verdadero", !isConnected);
+	TestFalse("isConnected must be false", isConnected);
+	TestTrue("!isConnected must be true", !isConnected);
 
 	UObject* player = nullptr;
-	TestNull("Comprobamos que el jugador es null", player);
+	TestNull("The player must be null", player);
 
 	DummyObject* object1 = new DummyObject();
-	TestNotNull("Comprobamos que el objeto no es null", object1);
+	TestNotNull("object1 can't be null", object1);
 
 	DummyObject* object2 = new DummyObject();
-	TestNotEqual("Comprobamos que el objeto1 no es el objeto2", object1, object2);
-	TestNotSame("Comprobamos que el objeto1 no es el objeto2 (posición de memória)", object1, object2);
+	TestNotEqual("object1 isn't object2", object1, object2);
 
 	DummyObject* objectB = object1;
-	TestNotSame("Comprobamos que el objeto1 no es el objetoB (posición de memória)", object1, objectB);
-	TestEqual("Comprobamos que el objeto1 es el objetoB", object1, objectB);
+	TestNotSame("object1 and objectB can't be the same (memory position)", object1, objectB);
+	TestEqual("object1 and objectB must be equal", object1, objectB);
 
 	return true;
 }
@@ -120,13 +120,13 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestExpectedError, "TestingSandbox.D
 
 bool FDummyActorTestExpectedError::RunTest(const FString& Parameters)
 {
-	AddExpectedError(TEXT("La casilla de destino no es válida"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
+	AddExpectedError(TEXT("Destination square is not valid"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
 	UE_LOG(LogTemp, Error,
 	       TEXT(
-		       "Como se ha definido el flag MatchType:Contains solo hace falta que el mensaje de error se encuentre contenido en esta frase: La casilla de destino no es válida sin importar lo que haya delante o detrás"
+		       "As we hace defined the flat MathcType:Contains, this test will pass thoug it includes the estring 'Destination square is not valid'"
 	       ));
 
-	AddWarning(TEXT("Este test va a pasar, porque se intercepta el error"));
+	AddInfo(TEXT("This test will pass becasue the error is intercepted"));
 
 	return true;
 }
@@ -138,12 +138,12 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestExpectedErrorExactFail,
 
 bool FDummyActorTestExpectedErrorExactFail::RunTest(const FString& Parameters)
 {
-	AddExpectedError(TEXT("La casilla de destino no es válida"), EAutomationExpectedErrorFlags::MatchType::Exact, 0);
+	AddExpectedError(TEXT("Destination square is not valid"), EAutomationExpectedErrorFlags::MatchType::Exact, 0);
 	UE_LOG(LogTemp, Error,
 	       TEXT(
-		       "En este caso se ha definido el flag MatchType:Exact por lo tanto no coincidirá con lo esperado: La casilla de destino no es válida, ahora sí importa lo que haya delante o detrás"
+		       "As we hace defined the flat MathcType:Exact, this test will fail thoug it includes the estring 'Destination square is not valid'"
 	       ));
-	AddWarning(TEXT("Este test va a fallar porque se espera encontrar la cadena exacta"));
+	AddWarning(TEXT("This test will fail because it expected to match the exact string"));
 
 	return true;
 }
@@ -155,12 +155,12 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestExpectedErrorExactSuccess,
 
 bool FDummyActorTestExpectedErrorExactSuccess::RunTest(const FString& Parameters)
 {
-	AddExpectedError(TEXT("casilla de destino no es válida"), EAutomationExpectedErrorFlags::MatchType::Exact, 0);
-	UE_LOG(LogTemp, Error, TEXT("casilla de destino no es válida"));
+	AddExpectedError(TEXT("Destination square is not valid"), EAutomationExpectedErrorFlags::MatchType::Exact, 0);
+	UE_LOG(LogTemp, Error, TEXT("Destination square is not valid"));
 
 
 	// Esto no aparece
-	AddWarning(TEXT("Este test va a pasar porque la cadena es la esperada"));
+	AddInfo(TEXT("This test passes becasue the expected string is exactly matched by the error message"));
 
 	return true;
 }
@@ -173,9 +173,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestExpectedErrorRegex,
 bool FDummyActorTestExpectedErrorRegex::RunTest(const FString& Parameters)
 {
 	AddExpectedError(TEXT("\\d{4}"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
-	UE_LOG(LogTemp, Error, TEXT("Código secreto 1234"));
+	UE_LOG(LogTemp, Error, TEXT("SecretCode 1234"));
 
-	AddWarning(TEXT("Este test pasa porque la expresión regular indica que se buscan 4 dígitos consecutivos"));
+	AddInfo(
+		TEXT("This test passes becasue the regular expression looks for an error message with 4 consecutive digits"));
 
 	return true;
 }
@@ -187,15 +188,18 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDummyActorTestExpectedErrorRegexFail,
 bool FDummyActorTestExpectedErrorRegexFail::RunTest(const FString& Parameters)
 {
 	AddExpectedError(TEXT("\\d{4}"), EAutomationExpectedErrorFlags::MatchType::Contains, 0);
-	UE_LOG(LogTemp, Error, TEXT("Código secreto ABCDE"));
+	UE_LOG(LogTemp, Error, TEXT("Secret Code ABCDE"));
 
-	AddWarning(TEXT(
-		"Este test falla porque la expresión regular indica que se buscan 4 dígitos consecutivos y el mensaje de error solo cotiene letras"));
+	AddWarning(TEXT("This tests fails because the regex match 4 numbers and the error message don't have them"));
 	return true;
 }
 
-// Los tests complejos deben implementar dos funciontes, GetTests y RunTest, que será el test a ejecutar para
-// Cada uno de los elementos preparados en GetTest
+/*
+ * All complex tests must implement those two functions: GetTestst and RunTests. On GetTests the testes are
+ * prepared with a different command (paràmeter) and optionally a pretty name.
+ * 
+ * WARNING! Those tests don't run on Rider!
+ */
 IMPLEMENT_COMPLEX_AUTOMATION_TEST(FComplexTest, "TestingSandbox.DummyActorTest.Complex",
                                   EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
@@ -209,14 +213,17 @@ void FComplexTest::GetTests(TArray<FString>& OutBeautifiedNames, TArray<FString>
 	}
 }
 
-// Los parámetros siempre llegan como un string y hay que procesarlos como sea necesario
+/*
+ * All the paràmeters must be included as a single string, and processed as needed
+ */
 bool FComplexTest::RunTest(const FString& Parameters)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s"), *Parameters);
 	int32 i = FCString::Atoi(*Parameters);
 
+	// Only even numbers will pass the test
 	// Solo pararan los números pares
-	TestEqual("No es par", i % 2, 0);
+	TestEqual("It's odd", i % 2, 0);
 
 
 	//ADD_LATENT_AUTOMATION_COMMAND(FEnqueuePerformanceCaptureCommands());

@@ -1,21 +1,47 @@
 # Unreal Engine Automation Testing Sandbox
 
-Proyecto para Unreal Engine 5 en el que se incluyen los scripts necesarios para demostrar el funcionamiento del sistema de tests automatizados (Automation Testing) integrado en el motor.
+Unreal engine 4 project that includes the necessary code to show how the UE Automation Test system works (Automation Testing) in unison with the engine. It includes a set of Functional tests that show how to include tests using Blueprints.
 
-Se incluyen ejemplos de tests que se pasan con éxito y tests que fallan indicando los motivos por los que fallan.
+This sample project includes some failing tests to show how and why those tests fail. In every case a warning or error message explains why it failed.
 
-## Uso con Unreal Engine 4
-Aunque el proyecto está configurado para Unreal Engine 5 el código es completamente compatible con UE4, aunque en ese caso será necesario activar los plugins de automatización (en UE5 están activados por defecto)
 
-## Ejecución de los tests
-Los tests pueden ejecutarse desde la ventana *Session Frontend* (pestaña *Automation*), desde Rider (pestaña inferior, *Unit Tests*) o desde la línea de comandos. Para UE5:
+To run the tests in the editor the following plugins must be enabled:
+  * Runtime Tests
+  * Functional Testing Editor
+
+
+Though this project has been created for UE4.27, all the tests are compatible with UE5.
+  * Functional tests in 5.03 take a lot of time to prepare, so they will fail before being run (from <1s in UE4.27 to >100s in UE5.03).
+
+
+## Running Tests
+Those tests can be run from the Session Front-end Window (*Automation* tab), selecting *TestingSanbox* rows for the unit tests, and *Project. Functional Tests* for the Functional Tests (Blueprint tests).
+
+Also, Automated Tests (not functional) can be run in Rider IDE (bottom tab, *Unit Tests*), but complex tests will show an error and won't run.
+
+
+To run the *Automation Tests* from the command line:
+```
+{ue4 editor path}\UE4Editor.exe" {project path}\TestingSandbox.uproject" -ExecCmds="Automation RunTests TestingSandbox" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={ruta al proyecto}\Saved\TestReport\Automation" -Log -Log=RunTests.log
+```
+
+To run the *Functional Tests* from the command line:
+```
+{ue4 editor path}\UE4Editor.exe" {project path}\TestingSandbox.uproject" -ExecCmds="Automation RunTests Functional Tests" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={ruta al proyecto}\Saved\TestReport\Functional" -Log -Log=RunTests.log
+```
+
+
+On UE5 the editor executable filename have changed:
+```
+{ue5 editor path}\UnrealEditor.exe" {project path}\TestingSandbox.uproject" -ExecCmds="Automation RunTests TestingSandbox" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={project path}\Saved\TestReport\Automation" -Log -Log=RunTests.log
+```
 
 ```
-{ruta al editor de ue5}\UnrealEditor.exe" {ruta al proyecto}\TestingSandbox.uproject" -ExecCmds="Automation RunTests TestingSandbox" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={ruta al proyecto}\Saved\TestReport" -Log -Log=RunTests.log
-```
-Para UE4 hay que cambiar el nombre del editor:
-```
-{ruta al editor de ue4}\UE4Editor.exe" {ruta al proyecto}\TestingSandbox.uproject" -ExecCmds="Automation RunTests TestingSandbox" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={ruta al proyecto}\Saved\TestReport" -Log -Log=RunTests.log
+{ue5 editor path}\UnrealEditor.exe" {project path}\TestingSandbox.uproject" -ExecCmds="Automation RunTests Functional Tests" -Unattended -NullRHI -TestExit="Automation Test Queue Empty" -ReportOutputPath={project path}\Saved\TestReport\Automation" -Log -Log=RunTests.log
 ```
 
-Estos parámetros de ejecución lanzarán los tests sin cargar la interficie de Unreal Engine y guardaran el resultado de los tests en la carpeta `{ruta al proyecto}\Saved\TestReport`. Dentro encontraréis dos archivos, un archivo con los resultados en formato JSON y un archivo HTML para visualizarlos (**requiere un servidor web**).
+
+### Command line parameters ### 
+Those execution parameters will run the tests without loading the Unreal Engine Editor, and will save the test results inside `{project path}\Saved\TestReport\Automation}` and `{project path}\Saved\TestReport\Functional}` respectively.
+
+Inside this directory will be 2 files: a json file with the text and an HTML file what will load it (a web server is required to serve those files because you can open a json file locally from a browser, but for CI servers you only need to parse the JSON file).
